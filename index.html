@@ -11,44 +11,99 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
+  <div class="main-container">
     <h1><i class="fas fa-layer-group"></i> Stack Visualizer</h1>
     
-    <div class="controls">
-      <div class="input-group">
-        <input type="text" id="element-input" placeholder="輸入元素值" maxlength="10">
-        <button id="push-btn"><i class="fas fa-arrow-down"></i> Push</button>
+    <div class="visualizers-container">
+      <!-- 堆疊視覺化器 -->
+      <div class="container stack-container-wrapper">
+        <h2><i class="fas fa-layer-group"></i> Stack</h2>
+        
+        <div class="controls">
+          <div class="input-group">
+            <input type="text" id="element-input" placeholder="輸入元素值" maxlength="10">
+            <button id="push-btn"><i class="fas fa-arrow-down"></i> Push</button>
+          </div>
+          <button id="pop-btn"><i class="fas fa-arrow-up"></i> Pop</button>
+          <button id="peek-btn"><i class="fas fa-eye"></i> Peek</button>
+          <button id="clear-btn"><i class="fas fa-trash-alt"></i> Clear</button>
+        </div>
+        
+        <div class="stack-container">
+          <div class="stack-label"><i class="fas fa-arrow-circle-up"></i> Top</div>
+          <div class="stack-wrapper">
+            <div id="stack-visualizer" class="stack-visualizer"></div>
+          </div>
+          <div class="stack-label"><i class="fas fa-arrow-circle-down"></i> Bottom</div>
+        </div>
+        
+        <div class="info-panel">
+          <div class="info-item">
+            <span><i class="fas fa-calculator"></i> Size:</span>
+            <span id="stack-size">0</span>
+          </div>
+          <div class="info-item">
+            <span><i class="fas fa-history"></i> Recent Operation:</span>
+            <span id="last-operation">None</span>
+          </div>
+          <div class="info-item">
+            <span><i class="fas fa-info-circle"></i> Result:</span>
+            <span id="operation-result">None</span>
+          </div>
+        </div>
       </div>
-      <button id="pop-btn"><i class="fas fa-arrow-up"></i> Pop</button>
-      <button id="peek-btn"><i class="fas fa-eye"></i> Peek</button>
-      <button id="clear-btn"><i class="fas fa-trash-alt"></i> Clear</button>
-    </div>
-    
-    <div class="stack-container">
-      <div class="stack-label"><i class="fas fa-arrow-circle-up"></i> Top</div>
-      <div class="stack-wrapper">
-        <div id="stack-visualizer" class="stack-visualizer"></div>
-      </div>
-      <div class="stack-label"><i class="fas fa-arrow-circle-down"></i> Bottom</div>
-    </div>
-    
-    <div class="info-panel">
-      <div class="info-item">
-        <span><i class="fas fa-calculator"></i> Size:</span>
-        <span id="stack-size">0</span>
-      </div>
-      <div class="info-item">
-        <span><i class="fas fa-history"></i> Recent Operation:</span>
-        <span id="last-operation">None</span>
-      </div>
-      <div class="info-item">
-        <span><i class="fas fa-info-circle"></i> Result:</span>
-        <span id="operation-result">None</span>
+
+      <!-- 後綴表達式計算器 -->
+      <div class="container postfix-container-wrapper">
+        <h2><i class="fas fa-calculator"></i> Postfix Evaluator</h2>
+        
+        <div class="controls">
+          <div class="input-group">
+            <input type="text" id="postfix-input" placeholder="輸入後綴表達式 (例如: 3 4 + 5 *)" maxlength="30">
+            <button id="evaluate-btn"><i class="fas fa-play"></i> 計算</button>
+          </div>
+          <button id="step-btn"><i class="fas fa-step-forward"></i> 逐步執行</button>
+          <button id="reset-btn"><i class="fas fa-undo"></i> 重置</button>
+        </div>
+        
+        <div class="postfix-visualization">
+          <div class="expression-display">
+            <div class="expression-label">expression:</div>
+            <div id="postfix-expression" class="expression-content"></div>
+          </div>
+          
+          <div class="evaluation-container">
+            <div class="postfix-stack-container">
+              <div class="stack-label"><i class="fas fa-arrow-circle-up"></i> Top</div>
+              <div class="stack-wrapper">
+                <div id="postfix-stack" class="stack-visualizer"></div>
+              </div>
+              <div class="stack-label"><i class="fas fa-arrow-circle-down"></i> Bottom</div>
+            </div>
+            
+            <div class="evaluation-steps">
+              <div class="step-label">steps:</div>
+              <div id="evaluation-steps" class="steps-content"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="info-panel">
+          <div class="info-item">
+            <span><i class="fas fa-square-root-alt"></i> result:</span>
+            <span id="evaluation-result">None</span>
+          </div>
+          <div class="info-item">
+            <span><i class="fas fa-info-circle"></i> state:</span>
+            <span id="evaluation-status">ready</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <script src="Stack.js"></script>
   <script src="stackVisualizer.js"></script>
+  <script src="postfixEvaluator.js"></script>
 </body>
 </html> 
