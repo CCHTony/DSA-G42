@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stack</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-layer-group"></i> Stack Visualizer</h1>
+    
+    <div class="controls">
+      <div class="input-group">
+        <input type="text" id="element-input" placeholder="輸入元素值" maxlength="10">
+        <button id="push-btn"><i class="fas fa-arrow-down"></i> Push</button>
+      </div>
+      <button id="pop-btn"><i class="fas fa-arrow-up"></i> Pop</button>
+      <button id="peek-btn"><i class="fas fa-eye"></i> Peek</button>
+      <button id="clear-btn"><i class="fas fa-trash-alt"></i> Clear</button>
+    </div>
+    
+    <div class="stack-container">
+      <div class="stack-label"><i class="fas fa-arrow-circle-up"></i> Top</div>
+      <div class="stack-wrapper">
+        <div id="stack-visualizer" class="stack-visualizer"></div>
+      </div>
+      <div class="stack-label"><i class="fas fa-arrow-circle-down"></i> Bottom</div>
+    </div>
+    
+    <div class="info-panel">
+      <div class="info-item">
+        <span><i class="fas fa-calculator"></i> Size:</span>
+        <span id="stack-size">0</span>
+      </div>
+      <div class="info-item">
+        <span><i class="fas fa-history"></i> Recent Operation:</span>
+        <span id="last-operation">None</span>
+      </div>
+      <div class="info-item">
+        <span><i class="fas fa-info-circle"></i> Result:</span>
+        <span id="operation-result">None</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="Stack.js"></script>
+  <script src="stackVisualizer.js"></script>
+</body>
+</html> 
