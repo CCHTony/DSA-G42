@@ -66,49 +66,67 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 從堆疊彈出元素
   const popElement = () => {
-    if (stack.isEmpty()) {
-      updateOperationInfo('Pop', 'Stack is empty');
-      return;
-    }
+    // 滾動到頂部
+      const stackWrapper = document.querySelector('.stack-wrapper');
+      stackWrapper.scrollTo({
+        top: 0,
+        behavior: 'smooth' // 平滑滾動
+      });
     
-    // 更新堆疊數據
-    const value = stack.pop();
-    updateStackSize();
-    updateOperationInfo('Pop', value);
-    
-    // 更新視覺效果
-    const items = stackVisualizer.children;
-    if (items.length > 0) {
-      const lastItem = items[items.length - 1];
-      lastItem.classList.add('stack-item-exit');
-      
       setTimeout(() => {
-        stackVisualizer.removeChild(lastItem);
-      }, 500);
-    }
-  };
+        if (stack.isEmpty()) {
+          updateOperationInfo('Pop', 'Stack is empty');
+          return;
+        }
+
+        // 更新堆疊數據
+        const value = stack.pop();
+        updateStackSize();
+        updateOperationInfo('Pop', value);
+
+        // 更新視覺效果
+        const items = stackVisualizer.children;
+        if (items.length > 0) {
+          const lastItem = items[items.length - 1];
+          lastItem.classList.add('stack-item-exit');
+
+          setTimeout(() => {
+            stackVisualizer.removeChild(lastItem);
+          }, 500);
+        }
+      }, 300);
+};
   
   // 查看堆疊頂部元素
   const peekElement = () => {
-    const value = stack.peek();
-    
-    if (value === null) {
-      updateOperationInfo('Peek', 'Stack is empty');
-      return;
-    }
-    
-    updateOperationInfo('Peek', value);
-    
-    // 視覺效果
-    const items = stackVisualizer.children;
-    if (items.length > 0) {
-      const lastItem = items[items.length - 1];
-      lastItem.classList.add('stack-item-peek');
-      
-      setTimeout(() => {
-        lastItem.classList.remove('stack-item-peek');
-      }, 1000);
-    }
+    // 滾動到頂部
+    const stackWrapper = document.querySelector('.stack-wrapper');
+    stackWrapper.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+    setTimeout(() => {
+      const value = stack.peek();
+  
+      if (value === null) {
+        updateOperationInfo('Peek', 'Stack is empty');
+        return;
+      }
+  
+      updateOperationInfo('Peek', value);
+  
+      // 視覺效果
+      const items = stackVisualizer.children;
+      if (items.length > 0) {
+        const lastItem = items[items.length - 1];
+        lastItem.classList.add('stack-item-peek');
+  
+        setTimeout(() => {
+          lastItem.classList.remove('stack-item-peek');
+        }, 1000);
+      }
+    }, 300); // 稍作停頓再執行 peek 效果
   };
   
   // 清空堆疊
