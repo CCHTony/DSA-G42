@@ -63,6 +63,16 @@ document.addEventListener('DOMContentLoaded', () => {
     elementInput.value = '';
     elementInput.focus();
   };
+
+  // 取得stack.pop時要刪除的DOM
+  function getLastItem(items) {
+    for (let i = items.length - 1; i >= 0; i--) {
+      if (!items[i].classList.contains('stack-item-exit')) {
+        return items[i];
+      }
+    }
+    return null;
+  }
   
   // 從堆疊彈出元素
   const popElement = () => {
@@ -79,7 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 更新視覺效果
     const items = stackVisualizer.children;
     if (items.length > 0) {
-      const lastItem = items[items.length - 1];
+      const lastItem = getLastItem(items);
+      if (lastItem === null) {
+        updateOperationInfo('Pop', 'Stack is empty');
+        return;
+      }
       lastItem.classList.add('stack-item-exit');
       
       setTimeout(() => {
@@ -102,7 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 視覺效果
     const items = stackVisualizer.children;
     if (items.length > 0) {
-      const lastItem = items[items.length - 1];
+      const lastItem = getLastItem(items);
+      if (lastItem === null) {
+        updateOperationInfo('Peek', 'Stack is empty');
+        return;
+      }
       lastItem.classList.add('stack-item-peek');
       
       setTimeout(() => {
@@ -163,13 +181,14 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 添加一個隨機彩虹效果到標題
   const title = document.querySelector('h1');
+  let hue = Math.floor(Math.random() * 360);
   setInterval(() => {
-    const hue = Math.floor(Math.random() * 360);
+    hue = (hue + Math.floor(Math.random() * 5) + 1) % 360;
     title.style.background = `linear-gradient(to right, 
       hsl(${hue}, 80%, 50%), 
       hsl(${(hue + 60) % 360}, 80%, 60%), 
       hsl(${(hue + 180) % 360}, 80%, 50%))`;
     title.style.webkitBackgroundClip = 'text';
     title.style.backgroundClip = 'text';
-  }, 3000);
+  }, 100);
 }); 
