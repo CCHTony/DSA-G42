@@ -87,6 +87,25 @@ document.addEventListener('DOMContentLoaded', () => {
       postfixExpressionEl.appendChild(tokenEl);
     });
   };
+
+  function getRandomMujica(){
+    i = Math.floor(Math.random() * (5)) + 1;
+    if (i === 1){
+      return "url('./images/Mutsumi.png')";
+    }
+    else if (i === 2){
+      return "url('./images/Sakiko.png')"
+    }
+    else if (i === 3){
+      return "url('./images/Nyamu.png')"
+    }
+    else if (i === 4){
+      return "url('./images/Umiri.png')"
+    }
+    else if (i === 5){
+      return "url('./images/Hatsune.png')"
+    }
+  }
   
   // 創建堆疊項目元素
   const createStackItem = (value) => {
@@ -95,10 +114,16 @@ document.addEventListener('DOMContentLoaded', () => {
     item.textContent = value;
     
     // 隨機生成漸變顏色
-    const hue1 = Math.floor(Math.random() * 360);
-    const hue2 = (hue1 + 40) % 360;
-    item.style.background = `linear-gradient(135deg, hsla(${hue1}, 80%, 60%, 0.8), hsla(${hue2}, 80%, 50%, 0.8))`;
+    // const hue1 = Math.floor(Math.random() * 360);
+    // const hue2 = (hue1 + 40) % 360;
+    // item.style.background = `linear-gradient(135deg, hsla(${hue1}, 80%, 60%, 0.8), hsla(${hue2}, 80%, 50%, 0.8))`;
     
+    // item.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    item.style.display = 'inline-block'
+    item.style.backgroundImage = getRandomMujica();
+    item.style.backgroundSize = 'contain'; // 或用 'contain' 看你想怎麼填滿
+    item.style.backgroundPosition = 'left';
+    item.style.backgroundRepeat = 'no-repeat';
     return item;
   };
   
@@ -272,6 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 執行單一步驟
   const runSingleStep = () => {
+    
     if (!isEvaluating) {
       evaluatePostfix(postfixInput.value);
       currentStepIndex = -1;

@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const popBtn = document.getElementById('pop-btn');
   const peekBtn = document.getElementById('peek-btn');
   const clearBtn = document.getElementById('clear-btn');
+  const randomBtn = document.getElementById('random-btn');
   const stackSizeEl = document.getElementById('stack-size');
   const lastOperationEl = document.getElementById('last-operation');
   const operationResultEl = document.getElementById('operation-result');
@@ -24,20 +25,43 @@ document.addEventListener('DOMContentLoaded', () => {
   // 更新操作信息
   const updateOperationInfo = (operation, result) => {
     lastOperationEl.textContent = operation;
-    operationResultEl.textContent = result !== null ? result : '無';
+    operationResultEl.textContent = result !== null ? result : 'NIL';
   };
+
+
+  function getRandomMyGO(){
+    i = Math.floor(Math.random() * (5)) + 1;
+    if (i === 1){
+      return "url('./images/Anon.png')";
+    }
+    else if (i === 2){
+      return "url('./images/Tomorin.png')"
+    }
+    else if (i === 3){
+      return "url('./images/Rana.png')"
+    }
+    else if (i === 4){
+      return "url('./images/Soyo.png')"
+    }
+    else if (i === 5){
+      return "url('./images/Rikki.png')"
+    }
+  }
   
   // 創建堆疊項目元素
   const createStackItem = (value) => {
     const item = document.createElement('div');
     item.className = 'stack-item stack-item-enter';
     item.textContent = value;
-    
     // 隨機生成漸變顏色
-    const hue1 = Math.floor(Math.random() * 360);
-    const hue2 = (hue1 + 40) % 360;
-    item.style.background = `linear-gradient(135deg, hsla(${hue1}, 80%, 60%, 0.8), hsla(${hue2}, 80%, 50%, 0.8))`;
+    // const hue1 = Math.floor(Math.random() * 360);
+    // const hue2 = (hue1 + 40) % 360;
+    // item.style.background = `linear-gradient(135deg, hsla(${hue1}, 80%, 60%, 0.8), hsla(${hue2}, 80%, 50%, 0.8))`;
     
+    item.style.backgroundImage = getRandomMyGO();
+    item.style.backgroundSize = 'contain'; // 或用 'cover' 看你想怎麼填滿
+    item.style.backgroundPosition = 'right';
+    item.style.backgroundRepeat = 'no-repeat';
     return item;
   };
   
@@ -143,6 +167,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
+  function random_stuff(){
+    i = Math.floor(Math.random() * (7)) + 1;
+    if (i === 1){
+      return "Distribute Snacks Appropriately";
+    }
+    else if (i === 2){
+      return "Daily Study Auditorium"
+    }
+    else if (i === 3){
+      return "Diamond Set Arrangement"
+    }
+    else if (i === 4){
+      return "Despair Sans Absolution"
+    }
+    else if (i === 5){
+      return "Dock Spot Arboretum"
+    }
+    else if (i === 6){
+      return "Dusty Scholar’s Abyss"
+    }
+    else{
+      return "Device Symptom Aggregation"
+    }
+  }
+
+  randomBtn.addEventListener('click', () => {
+    pushElement(random_stuff());
+  });
+  
   popBtn.addEventListener('click', popElement);
   peekBtn.addEventListener('click', peekElement);
   clearBtn.addEventListener('click', clearStack);
@@ -163,13 +216,14 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 添加一個隨機彩虹效果到標題
   const title = document.querySelector('h1');
+  hue = Math.floor(Math.random() * 360);
   setInterval(() => {
-    const hue = Math.floor(Math.random() * 360);
     title.style.background = `linear-gradient(to right, 
       hsl(${hue}, 80%, 50%), 
       hsl(${(hue + 60) % 360}, 80%, 60%), 
       hsl(${(hue + 180) % 360}, 80%, 50%))`;
     title.style.webkitBackgroundClip = 'text';
     title.style.backgroundClip = 'text';
-  }, 3000);
+    hue = (hue + 1) %360;
+  }, 60);
 }); 
