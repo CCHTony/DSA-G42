@@ -1,6 +1,7 @@
 /**
  * 堆疊視覺化器
  */
+import Stack from "./Stack.js";
 document.addEventListener('DOMContentLoaded', () => {
   // 獲取 DOM 元素
   const stackVisualizer = document.getElementById('stack-visualizer');

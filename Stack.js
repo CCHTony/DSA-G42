@@ -97,4 +97,5 @@ function testStack() {
 }
 
 // 導出 Stack 類
-module.exports = Stack; 
+// module.exports = Stack; 
+export default Stack;
