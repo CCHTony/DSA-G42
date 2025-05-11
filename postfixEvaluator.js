@@ -1,6 +1,7 @@
 /**
  * 後綴表達式計算器
  */
+import Stack from "./Stack.js";
 document.addEventListener('DOMContentLoaded', () => {
   // 獲取DOM元素
   const postfixInput = document.getElementById('postfix-input');

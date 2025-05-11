@@ -1,6 +1,7 @@
 /**
  * 堆疊視覺化器
  */
+import Stack from "./Stack.js";
 document.addEventListener('DOMContentLoaded', () => {
   // 獲取 DOM 元素
   const stackVisualizer = document.getElementById('stack-visualizer');
@@ -63,6 +64,16 @@ document.addEventListener('DOMContentLoaded', () => {
     elementInput.value = '';
     elementInput.focus();
   };
+
+  // 取得stack.pop時要刪除的DOM
+  function getLastItem(items) {
+    for (let i = items.length - 1; i >= 0; i--) {
+      if (!items[i].classList.contains('stack-item-exit')) {
+        return items[i];
+      }
+    }
+    return null;
+  }
   
   // 從堆疊彈出元素
   const popElement = () => {
@@ -73,6 +84,16 @@ document.addEventListener('DOMContentLoaded', () => {
         behavior: 'smooth' // 平滑滾動
       });
     
+    // 更新視覺效果
+    const items = stackVisualizer.children;
+    if (items.length > 0) {
+      const lastItem = getLastItem(items);
+      if (lastItem === null) {
+        updateOperationInfo('Pop', 'Stack is empty');
+        return;
+      }
+      lastItem.classList.add('stack-item-exit');
+      
       setTimeout(() => {
         if (stack.isEmpty()) {
           updateOperationInfo('Pop', 'Stack is empty');
@@ -99,34 +120,29 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 查看堆疊頂部元素
   const peekElement = () => {
-    // 滾動到頂部
-    const stackWrapper = document.querySelector('.stack-wrapper');
-    stackWrapper.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-
-    setTimeout(() => {
-      const value = stack.peek();
-  
-      if (value === null) {
+    const value = stack.peek();
+    
+    if (value === null) {
+      updateOperationInfo('Peek', 'Stack is empty');
+      return;
+    }
+    
+    updateOperationInfo('Peek', value);
+    
+    // 視覺效果
+    const items = stackVisualizer.children;
+    if (items.length > 0) {
+      const lastItem = getLastItem(items);
+      if (lastItem === null) {
         updateOperationInfo('Peek', 'Stack is empty');
         return;
       }
-  
-      updateOperationInfo('Peek', value);
-  
-      // 視覺效果
-      const items = stackVisualizer.children;
-      if (items.length > 0) {
-        const lastItem = items[items.length - 1];
-        lastItem.classList.add('stack-item-peek');
-  
-        setTimeout(() => {
-          lastItem.classList.remove('stack-item-peek');
-        }, 1000);
-      }
-    }, 300); // 稍作停頓再執行 peek 效果
+      lastItem.classList.add('stack-item-peek');
+      
+      setTimeout(() => {
+        lastItem.classList.remove('stack-item-peek');
+      }, 1000);
+    }
   };
   
   // 清空堆疊
@@ -181,13 +197,14 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 添加一個隨機彩虹效果到標題
   const title = document.querySelector('h1');
+  let hue = Math.floor(Math.random() * 360);
   setInterval(() => {
-    const hue = Math.floor(Math.random() * 360);
+    hue = (hue + Math.floor(Math.random() * 5) + 1) % 360;
     title.style.background = `linear-gradient(to right, 
       hsl(${hue}, 80%, 50%), 
       hsl(${(hue + 60) % 360}, 80%, 60%), 
       hsl(${(hue + 180) % 360}, 80%, 50%))`;
     title.style.webkitBackgroundClip = 'text';
     title.style.backgroundClip = 'text';
-  }, 3000);
+  }, 100);
 }); 
