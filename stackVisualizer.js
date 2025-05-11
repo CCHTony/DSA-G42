@@ -2,6 +2,7 @@
  * 堆疊視覺化器
  */
 import Stack from "./Stack.js";
+
 document.addEventListener('DOMContentLoaded', () => {
   // 獲取 DOM 元素
   const stackVisualizer = document.getElementById('stack-visualizer');
@@ -13,19 +14,45 @@ document.addEventListener('DOMContentLoaded', () => {
   const stackSizeEl = document.getElementById('stack-size');
   const lastOperationEl = document.getElementById('last-operation');
   const operationResultEl = document.getElementById('operation-result');
+  const stackWrapper = document.querySelector('.stack-wrapper');
 
   // 創建堆疊實例
   const stack = new Stack();
   
+  // 控制變量
+  let isAnimating = false; // 防止動畫期間進行操作
+  
   // 更新堆疊大小顯示
   const updateStackSize = () => {
     stackSizeEl.textContent = stack.getSize();
+    
+    // 根據堆疊是否為空來設置按鈕狀態
+    const isEmpty = stack.isEmpty();
+    popBtn.disabled = isEmpty;
+    peekBtn.disabled = isEmpty;
+    clearBtn.disabled = isEmpty;
+    
+    if (isEmpty) {
+      popBtn.classList.add('disabled');
+      peekBtn.classList.add('disabled');
+      clearBtn.classList.add('disabled');
+    } else {
+      popBtn.classList.remove('disabled');
+      peekBtn.classList.remove('disabled');
+      clearBtn.classList.remove('disabled');
+    }
   };
   
-  // 更新操作信息
+  // 更新操作信息和提供視覺反饋
   const updateOperationInfo = (operation, result) => {
     lastOperationEl.textContent = operation;
-    operationResultEl.textContent = result !== null ? result : '無';
+    operationResultEl.textContent = result !== null ? result : 'None';
+    
+    // 視覺反饋 - 使結果閃爍顯示
+    operationResultEl.classList.add('highlight-pulse');
+    setTimeout(() => {
+      operationResultEl.classList.remove('highlight-pulse');
+    }, 1000);
   };
   
   // 創建堆疊項目元素
@@ -34,17 +61,41 @@ document.addEventListener('DOMContentLoaded', () => {
     item.className = 'stack-item stack-item-enter';
     item.textContent = value;
     
-    // 隨機生成漸變顏色
-    const hue1 = Math.floor(Math.random() * 360);
-    const hue2 = (hue1 + 40) % 360;
-    item.style.background = `linear-gradient(135deg, hsla(${hue1}, 80%, 60%, 0.8), hsla(${hue2}, 80%, 50%, 0.8))`;
+    // 生成漸變顏色 - 使用更加和諧的顏色方案
+    const hue = Math.floor(Math.random() * 360);
+    const saturation = Math.floor(Math.random() * 20) + 70; // 70-90%
+    const lightness = Math.floor(Math.random() * 20) + 50;  // 50-70%
+    
+    const hue2 = (hue + 40) % 360;
+    item.style.background = `linear-gradient(135deg, 
+      hsla(${hue}, ${saturation}%, ${lightness}%, 0.8), 
+      hsla(${hue2}, ${saturation}%, ${lightness-10}%, 0.8))`;
+    
+    // 添加打字機效果
+    if (value.length > 0) {
+      item.innerHTML = '<span class="typing"></span>';
+      const typingElement = item.querySelector('.typing');
+      
+      let i = 0;
+      const typeEffect = setInterval(() => {
+        if (i < value.length) {
+          typingElement.textContent += value.charAt(i);
+          i++;
+        } else {
+          clearInterval(typeEffect);
+          item.textContent = value;
+        }
+      }, 50);
+    }
     
     return item;
   };
   
   // 推入元素到堆疊
   const pushElement = (value) => {
-    if (!value) return;
+    if (!value || isAnimating) return;
+    
+    isAnimating = true;
     
     // 更新堆疊數據
     stack.push(value);
@@ -55,18 +106,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const item = createStackItem(value);
     stackVisualizer.appendChild(item);
     
+    // 滾動到頂部以顯示新元素
+    stackWrapper.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    
     // 添加動畫
     setTimeout(() => {
       item.classList.remove('stack-item-enter');
-    }, 10);
+      isAnimating = false;
+    }, 50);
     
-    // 清空輸入
+    // 清空輸入並聚焦
     elementInput.value = '';
     elementInput.focus();
   };
 
   // 取得stack.pop時要刪除的DOM
-  function getLastItem(items) {
+  function getLastStackItem() {
+    const items = stackVisualizer.children;
     for (let i = items.length - 1; i >= 0; i--) {
       if (!items[i].classList.contains('stack-item-exit')) {
         return items[i];
@@ -77,96 +136,156 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 從堆疊彈出元素
   const popElement = () => {
-    // 滾動到頂部
-      const stackWrapper = document.querySelector('.stack-wrapper');
-      stackWrapper.scrollTo({
-        top: 0,
-        behavior: 'smooth' // 平滑滾動
-      });
+    if (stack.isEmpty() || isAnimating) return;
     
-    // 更新視覺效果
-    const items = stackVisualizer.children;
-    if (items.length > 0) {
-      const lastItem = getLastItem(items);
-      if (lastItem === null) {
-        updateOperationInfo('Pop', 'Stack is empty');
+    isAnimating = true;
+    
+    // 滾動到頂部
+    stackWrapper.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+    setTimeout(() => {
+      // 獲取準備彈出的元素
+      const lastItem = getLastStackItem();
+      if (!lastItem) {
+        isAnimating = false;
         return;
       }
+      
+      // 更新堆疊數據
+      const value = stack.pop();
+      updateStackSize();
+      updateOperationInfo('Pop', value);
+      
+      // 添加退出動畫
       lastItem.classList.add('stack-item-exit');
+      lastItem.classList.add('pop-effect');
+      
+      // 短暫突顯彈出的項目
+      lastItem.style.zIndex = '10';
+      lastItem.style.transform = 'scale(1.1) translateX(0)';
       
       setTimeout(() => {
-        if (stack.isEmpty()) {
-          updateOperationInfo('Pop', 'Stack is empty');
-          return;
-        }
-
-        // 更新堆疊數據
-        const value = stack.pop();
-        updateStackSize();
-        updateOperationInfo('Pop', value);
-
-        // 更新視覺效果
-        const items = stackVisualizer.children;
-        if (items.length > 0) {
-          const lastItem = items[items.length - 1];
-          lastItem.classList.add('stack-item-exit');
-
-          setTimeout(() => {
+        lastItem.style.transform = 'translateX(100%)';
+        
+        setTimeout(() => {
+          if (stackVisualizer.contains(lastItem)) {
             stackVisualizer.removeChild(lastItem);
-          }, 500);
-        }
+          }
+          isAnimating = false;
+        }, 300);
       }, 300);
-};
+    }, 300);
+  };
   
   // 查看堆疊頂部元素
   const peekElement = () => {
+    if (stack.isEmpty() || isAnimating) return;
+    
+    // 滾動到頂部
+    stackWrapper.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
     const value = stack.peek();
-    
-    if (value === null) {
-      updateOperationInfo('Peek', 'Stack is empty');
-      return;
-    }
-    
     updateOperationInfo('Peek', value);
     
     // 視覺效果
-    const items = stackVisualizer.children;
-    if (items.length > 0) {
-      const lastItem = getLastItem(items);
-      if (lastItem === null) {
-        updateOperationInfo('Peek', 'Stack is empty');
-        return;
-      }
+    const lastItem = getLastStackItem();
+    if (lastItem) {
       lastItem.classList.add('stack-item-peek');
       
+      // 添加浮動效果
+      lastItem.style.transform = 'translateY(-10px)';
+      lastItem.style.boxShadow = '0 15px 25px rgba(0, 0, 0, 0.3)';
+      
       setTimeout(() => {
-        lastItem.classList.remove('stack-item-peek');
-      }, 1000);
+        lastItem.style.transform = '';
+        lastItem.style.boxShadow = '';
+        
+        setTimeout(() => {
+          lastItem.classList.remove('stack-item-peek');
+        }, 300);
+      }, 700);
     }
   };
   
   // 清空堆疊
   const clearStack = () => {
+    if (stack.isEmpty() || isAnimating) return;
+    
+    isAnimating = true;
+    
     stack.clear();
     updateStackSize();
     updateOperationInfo('Clear', 'Stack is empty');
     
-    // 清空視覺元素
+    // 清空視覺元素 - 使用階梯式動畫
     const items = Array.from(stackVisualizer.children);
-    items.forEach((item, index) => {
-      setTimeout(() => {
-        item.classList.add('stack-item-exit');
-        
+    
+    if (items.length === 0) {
+      isAnimating = false;
+      return;
+    }
+    
+    // 先震動效果
+    stackVisualizer.classList.add('shake-effect');
+    
+    setTimeout(() => {
+      stackVisualizer.classList.remove('shake-effect');
+      
+      items.forEach((item, index) => {
         setTimeout(() => {
-          if (stackVisualizer.contains(item)) {
-            stackVisualizer.removeChild(item);
-          }
-        }, 500);
-      }, index * 100);
+          item.classList.add('stack-item-exit');
+          
+          setTimeout(() => {
+            if (stackVisualizer.contains(item)) {
+              stackVisualizer.removeChild(item);
+            }
+            
+            // 在最後一個元素移除後解除動畫鎖
+            if (index === items.length - 1) {
+              isAnimating = false;
+            }
+          }, 300);
+        }, index * 100);
+      });
+    }, 400);
+  };
+  
+  // 初始化動畫與UI
+  const initializeUI = () => {
+    // 初始禁用按鈕
+    updateStackSize();
+    
+    // 為按鈕添加波紋效果
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        // 創建波紋元素
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+        this.appendChild(ripple);
+        
+        // 設置波紋位置
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${e.clientX - rect.left - size/2}px`;
+        ripple.style.top = `${e.clientY - rect.top - size/2}px`;
+        
+        // 移除波紋
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
     });
   };
   
-
+  // 事件監聽器
   pushBtn.addEventListener('click', () => {
     pushElement(elementInput.value);
   });
@@ -182,29 +301,35 @@ document.addEventListener('DOMContentLoaded', () => {
   clearBtn.addEventListener('click', clearStack);
   
   // 初始化
-  updateStackSize();
+  initializeUI();
 
   // 為演示添加一些初始元素
   setTimeout(() => {
-    const demoItems = ['Stack Demo', 'Try it out', 'Start experiencing'];
+    const demoItems = ['Stack Demo', 'Try operating', 'Start experiencing'];
     demoItems.forEach((item, index) => {
       setTimeout(() => {
         elementInput.value = item;
         pushElement(item);
       }, index * 800);
     });
-  }, 500);
+  }, 1000);
   
   // 添加一個隨機彩虹效果到標題
-  const title = document.querySelector('h1');
-  let hue = Math.floor(Math.random() * 360);
-  setInterval(() => {
-    hue = (hue + Math.floor(Math.random() * 5) + 1) % 360;
-    title.style.background = `linear-gradient(to right, 
-      hsl(${hue}, 80%, 50%), 
-      hsl(${(hue + 60) % 360}, 80%, 60%), 
-      hsl(${(hue + 180) % 360}, 80%, 50%))`;
-    title.style.webkitBackgroundClip = 'text';
-    title.style.backgroundClip = 'text';
-  }, 100);
+  const updateHeaderGradient = () => {
+    const headerElements = document.querySelectorAll('h1, h2');
+    headerElements.forEach(element => {
+      const hue = (Date.now() / 50) % 360;
+      element.style.background = `linear-gradient(to right, 
+        hsl(${hue}, 80%, 50%), 
+        hsl(${(hue + 60) % 360}, 80%, 60%), 
+        hsl(${(hue + 180) % 360}, 80%, 50%))`;
+      element.style.webkitBackgroundClip = 'text';
+      element.style.backgroundClip = 'text';
+    });
+    
+    requestAnimationFrame(updateHeaderGradient);
+  };
+  
+  // 啟動漸變動畫
+  requestAnimationFrame(updateHeaderGradient);
 }); 

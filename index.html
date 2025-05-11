@@ -9,80 +9,113 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
+  <meta name="theme-color" content="#8A2387">
 </head>
 <body>
+  <div class="loader">
+    <div class="loader-content">
+      <i class="fas fa-layer-group"></i>
+      <span>Loading...</span>
+    </div>
+  </div>
+
+  <header>
+    <div class="header-content">
+      <h1><i class="fas fa-layer-group"></i> Stack Visualizer</h1>
+      <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="theme-toggle">
+          <input type="checkbox" id="theme-toggle">
+          <div class="slider round"></div>
+        </label>
+        <span class="theme-label"><i class="fas fa-moon"></i></span>
+      </div>
+    </div>
+  </header>
+  
   <div class="main-container">
-    <h1><i class="fas fa-layer-group"></i> Stack Visualizer</h1>
-    
     <div class="visualizers-container">
       <!-- 堆疊視覺化器 -->
-      <div class="container stack-container-wrapper">
-        <h2><i class="fas fa-layer-group"></i> Stack</h2>
+      <div class="container stack-container-wrapper" data-aos="fade-up">
+        <div class="container-header">
+          <h2><i class="fas fa-layer-group"></i> Stack</h2>
+          <div class="tool-tip" data-tooltip="Stack is a last-in-first-out (LIFO) data structure">
+            <i class="fas fa-info-circle"></i>
+          </div>
+        </div>
         
         <div class="controls">
           <div class="input-group">
-            <input type="text" id="element-input" placeholder="輸入元素值" maxlength="10">
-            <button id="push-btn"><i class="fas fa-arrow-down"></i> Push</button>
+            <input type="text" id="element-input" placeholder="輸入元素值" maxlength="10" aria-label="Stack element input">
+            <button id="push-btn" class="btn-primary"><i class="fas fa-arrow-down"></i> Push</button>
           </div>
-          <button id="pop-btn"><i class="fas fa-arrow-up"></i> Pop</button>
-          <button id="peek-btn"><i class="fas fa-eye"></i> Peek</button>
-          <button id="clear-btn"><i class="fas fa-trash-alt"></i> Clear</button>
+          <div class="buttons-group">
+            <button id="pop-btn" class="btn-danger"><i class="fas fa-arrow-up"></i> Pop</button>
+            <button id="peek-btn" class="btn-warning"><i class="fas fa-eye"></i> Peek</button>
+            <button id="clear-btn" class="btn-secondary"><i class="fas fa-trash-alt"></i> Clear</button>
+          </div>
         </div>
         
         <div class="stack-container">
-          <div class="stack-label"><i class="fas fa-arrow-circle-up"></i> Top</div>
-          <div class="stack-wrapper">
+          <div class="stack-label top-label"><i class="fas fa-arrow-circle-up"></i> Top</div>
+          <div class="stack-wrapper custom-scrollbar">
             <div id="stack-visualizer" class="stack-visualizer"></div>
           </div>
-          <div class="stack-label"><i class="fas fa-arrow-circle-down"></i> Bottom</div>
+          <div class="stack-label bottom-label"><i class="fas fa-arrow-circle-down"></i> Bottom</div>
         </div>
         
         <div class="info-panel">
           <div class="info-item">
             <span><i class="fas fa-calculator"></i> Size:</span>
-            <span id="stack-size">0</span>
+            <span id="stack-size" class="highlight-text">0</span>
           </div>
           <div class="info-item">
-            <span><i class="fas fa-history"></i> Recent Operation:</span>
-            <span id="last-operation">None</span>
+            <span><i class="fas fa-history"></i> Last Operation:</span>
+            <span id="last-operation" class="highlight-text">None</span>
           </div>
           <div class="info-item">
             <span><i class="fas fa-info-circle"></i> Result:</span>
-            <span id="operation-result">None</span>
+            <span id="operation-result" class="highlight-text">None</span>
           </div>
         </div>
       </div>
 
       <!-- 後綴表達式計算器 -->
-      <div class="container postfix-container-wrapper">
-        <h2><i class="fas fa-calculator"></i> Postfix Evaluator</h2>
+      <div class="container postfix-container-wrapper" data-aos="fade-up" data-aos-delay="100">
+        <div class="container-header">
+          <h2><i class="fas fa-calculator"></i> Postfix Expression Calculator</h2>
+          <div class="tool-tip" data-tooltip="Postfix expression is an expression where the operator is placed after the operands">
+            <i class="fas fa-info-circle"></i>
+          </div>
+        </div>
         
         <div class="controls">
           <div class="input-group">
-            <input type="text" id="postfix-input" placeholder="輸入後綴表達式 (例如: 3 4 + 5 *)" maxlength="30">
-            <button id="evaluate-btn"><i class="fas fa-play"></i> 計算</button>
+            <input type="text" id="postfix-input" placeholder="Enter postfix expression (e.g., 3 4 + 5 *)" maxlength="30" aria-label="Postfix expression input">
+            <button id="evaluate-btn" class="btn-primary"><i class="fas fa-play"></i> Evaluate</button>
           </div>
-          <button id="step-btn"><i class="fas fa-step-forward"></i> 逐步執行</button>
-          <button id="reset-btn"><i class="fas fa-undo"></i> 重置</button>
+          <div class="buttons-group">
+            <button id="step-btn" class="btn-info"><i class="fas fa-step-forward"></i> Step</button>
+            <button id="reset-btn" class="btn-secondary"><i class="fas fa-undo"></i> Reset</button>
+          </div>
         </div>
         
         <div class="postfix-visualization">
           <div class="expression-display">
-            <div class="expression-label">expression:</div>
+            <div class="panel-label">Expression:</div>
             <div id="postfix-expression" class="expression-content"></div>
           </div>
           
           <div class="evaluation-container">
             <div class="postfix-stack-container">
-              <div class="stack-label"><i class="fas fa-arrow-circle-up"></i> Top</div>
-              <div class="stack-wrapper">
+              <div class="stack-label top-label"><i class="fas fa-arrow-circle-up"></i> Top</div>
+              <div class="stack-wrapper custom-scrollbar">
                 <div id="postfix-stack" class="stack-visualizer"></div>
               </div>
-              <div class="stack-label"><i class="fas fa-arrow-circle-down"></i> Bottom</div>
+              <div class="stack-label bottom-label"><i class="fas fa-arrow-circle-down"></i> Bottom</div>
             </div>
             
-            <div class="evaluation-steps">
-              <div class="step-label">steps:</div>
+            <div class="evaluation-steps custom-scrollbar">
+              <div class="panel-label">Execution Steps:</div>
               <div id="evaluation-steps" class="steps-content"></div>
             </div>
           </div>
@@ -90,20 +123,31 @@
         
         <div class="info-panel">
           <div class="info-item">
-            <span><i class="fas fa-square-root-alt"></i> result:</span>
-            <span id="evaluation-result">None</span>
+            <span><i class="fas fa-equals"></i> Result:</span>
+            <span id="evaluation-result" class="highlight-text">None</span>
           </div>
           <div class="info-item">
-            <span><i class="fas fa-info-circle"></i> state:</span>
-            <span id="evaluation-status">ready</span>
+            <span><i class="fas fa-info-circle"></i> Status:</span>
+            <span id="evaluation-status" class="highlight-text">Ready</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- <script src="Stack.js"></script> -->
+  <footer>
+    <div class="footer-content">
+      <p>Data Structure Visualization Tool &copy; 2025</p>
+      <div class="social-links">
+        <a href="https://github.com/CCHTony/DSA-G42" aria-label="GitHub"><i class="fab fa-github"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="Stack.js"></script>
   <script type="module" src="stackVisualizer.js"></script>
   <script type="module" src="postfixEvaluator.js"></script>
+  <script type="module" src="themeManager.js"></script>
 </body>
+</html> 
 </html> 
